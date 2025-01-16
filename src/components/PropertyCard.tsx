@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, DollarSign, Home, Car, Bath } from 'lucide-react'
+import { apiBaseUrl } from '@/lib/api-config.ts'
 
 interface Property {
   propertyId: number
@@ -36,12 +37,10 @@ export default function PropertyCard({ property }: { property: Property }) {
   return (
     <Card className="overflow-hidden group cursor-pointer transition-transform duration-300 hover:scale-105">
       <div className="relative h-64">
-        <Image
-          src={image?.imagePath || "/placeholder.svg"}
+        <img
+          src={`${apiBaseUrl}/${image?.imagePath}` || "/placeholder.svg"}
           alt={property.location}
-          fill
-          style={{ objectFit: 'cover' }}
-          className="transition-transform duration-300 group-hover:scale-110"
+          className="transition-transform duration-300 group-hover:scale-110 object-fit:cover h-full w-full rounded-b-lg"
         />
         <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
           {property.status}
@@ -54,7 +53,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           <span className="text-sm">{description.landType}</span>
         </div>
         <div className="flex items-center text-primary font-bold mb-2">
-          <DollarSign className="h-5 w-5 mr-1" />
+          <p className='font-bold'>UGX </p>
           <span>{property.price.toLocaleString()}</span>
           {property.status === 'For Rent' && <span className="text-sm text-gray-600 ml-1">/month</span>}
         </div>

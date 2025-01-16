@@ -5,6 +5,7 @@ import PropertyForm from './PropertyForm'
 import PropertyList from './PropertyList'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
+import { apiBaseUrl } from '@/lib/api-config'
 
 interface Property {
   propertyId: number
@@ -37,47 +38,23 @@ export default function PropertyManagement() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null)
   const [isFormVisible, setIsFormVisible] = useState(false)
 
-  useEffect(() => {
-    // Simulating API call to fetch properties
-    const fetchProperties = async () => {
-      // In a real application, you would fetch data from your API here
-      const mockProperties: Property[] = [
-        {
-          propertyId: 1,
-          userId: 1,
-          price: 250000,
-          location: "123 Main St, Anytown, USA",
-          status: "For Sale",
-          plotNumber: null,
-          Descriptions: [
-            {
-              description1: 1,
-              propertyId: 1,
-              landType: "Residential",
-              size: "2000 sqft",
-              houseType: "Single Family",
-              bedRooms: 3,
-              parking: "2 Car Garage",
-              bathRooms: 2,
-              YearBuilt: 2010,
-              Amentities: "Pool, Garden",
-            }
-          ],
-          PropertyImages: [
-            {
-              imageId: 1,
-              propertyId: 1,
-              imagePath: "/placeholder.svg?height=200&width=300"
-            }
-          ]
-        },
-        // Add more mock properties as needed
-      ]
-      setProperties(mockProperties)
+  const fetchData = async () => {
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/properties`);
+      const data = await res.json();
+      setProperties(data)
+      console.log(data);
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
+  };
 
-    fetchProperties()
-  }, [])
+  useEffect(() => {
+
+
+    fetchData();
+  }, []);
 
   const handleCreateProperty = (newProperty: Property) => {
     // Simulating API call to create a new property
@@ -85,41 +62,85 @@ export default function PropertyManagement() {
     setIsFormVisible(false)
   }
 
-  const handleUpdateProperty = (updatedProperty: Property) => {
-    // Simulating API call to update a property
-    setProperties(properties.map(p => p.propertyId === updatedProperty.propertyId ? updatedProperty : p))
-    setEditingProperty(null)
-  }
+  const handleUpdateProperty = async (updatedProperty: Property, propertyId: number, imageFiles: File[]) => {
+    try {
+      const formData = new FormData();
+      
+      // Add the JSON stringified property data
+      formData.append("property", JSON.stringify(updatedProperty));
+      
+      // Add the image files to the form data
+      imageFiles.forEach((file) => {
+        formData.append("imageFiles", file);
+      });
+      
+      const response = await fetch(`${apiBaseUrl}/api/properties/${propertyId}`, {
+        method: "PUT",
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update property. Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      console.log("Property updated successfully:", data);
+      
+      // Call fetchData to refresh the property list
+      fetchData();
+    } catch (error) {
+      console.error("Error updating property:", error);
+    }
+  };
+  
 
-  const handleDeleteProperty = (propertyId: number) => {
-    // Simulating API call to delete a property
-    setProperties(properties.filter(p => p.propertyId !== propertyId))
+  const handleDeleteProperty = async (propertyId: number) => {
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/properties/${propertyId}`,{method: 'DELETE'});
+      const data = await res.json();
+      console.log(data);
+      
+      fetchData()
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   return (
     <div>
-      {isFormVisible || editingProperty ? (
-        <PropertyForm
-          property={editingProperty}
-          onSubmit={editingProperty ? handleUpdateProperty : handleCreateProperty}
-          onCancel={() => {
-            setIsFormVisible(false)
-            setEditingProperty(null)
-          }}
+    {isFormVisible || editingProperty ? (
+      <PropertyForm
+        property={editingProperty}
+        onSubmit={(property: Property) => {
+          if (editingProperty) {
+            // Call handleUpdateProperty with additional arguments for updates
+            handleUpdateProperty(property, property.propertyId));
+          } else {
+            // Call handleCreateProperty for new properties
+            handleCreateProperty(property);
+          }
+        }}
+        onCancel={() => {
+          setIsFormVisible(false);
+          setEditingProperty(null);
+        }}
+      />
+    ) : (
+      <>
+        <Button onClick={() => setIsFormVisible(true)} className="mb-4">
+          <Plus className="mr-2 h-4 w-4" /> Add New Property
+        </Button>
+        <PropertyList
+          properties={properties}
+          onEdit={setEditingProperty}
+          onDelete={handleDeleteProperty}
         />
-      ) : (
-        <>
-          <Button onClick={() => setIsFormVisible(true)} className="mb-4">
-            <Plus className="mr-2 h-4 w-4" /> Add New Property
-          </Button>
-          <PropertyList
-            properties={properties}
-            onEdit={setEditingProperty}
-            onDelete={handleDeleteProperty}
-          />
-        </>
-      )}
-    </div>
+      </>
+    )}
+  </div>
+  
   )
 }
 

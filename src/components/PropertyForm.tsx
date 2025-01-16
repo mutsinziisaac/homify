@@ -200,17 +200,22 @@ export default function PropertyForm({ property, onSubmit, onCancel }: PropertyF
         />
       </div>
       <div>
-        <Label htmlFor="imagePath">Image URL</Label>
-        <Input
-          id="imagePath"
-          name="imagePath"
-          value={formData.PropertyImages[0].imagePath}
-          onChange={(e) => setFormData(prev => ({
-            ...prev,
-            PropertyImages: [{ ...prev.PropertyImages[0], imagePath: e.target.value }],
-          }))}
-        />
-      </div>
+  <Label htmlFor="imageFiles">Upload Images</Label>
+  <Input
+    id="imageFiles"
+    name="imageFiles"
+    type="file"
+    multiple
+    onChange={(e) => {
+      const files = Array.from(e.target.files || []);
+      setFormData((prev) => ({
+        ...prev,
+        imageFiles: files,
+      }));
+    }}
+  />
+</div>
+
       <div className="flex justify-end space-x-4">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel

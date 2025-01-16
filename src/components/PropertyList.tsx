@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Pencil, Trash2 } from 'lucide-react'
+import { apiBaseUrl } from '@/lib/api-config'
 
 interface Property {
   propertyId: number
@@ -39,14 +40,13 @@ export default function PropertyList({ properties, onEdit, onDelete }: PropertyL
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {properties.map((property) => (
+        
         <Card key={property.propertyId} className="overflow-hidden">
-          <Image
-            src={property.PropertyImages[0]?.imagePath || "/placeholder.svg?height=200&width=300"}
-            alt={property.location}
-            width={300}
-            height={200}
-            className="w-full h-48 object-cover"
-          />
+           <img
+          src={`${apiBaseUrl}/${property?.PropertyImages[0]?.imagePath}` || "/placeholder.svg"}
+          alt={property.location}
+          className="transition-transform duration-300 group-hover:scale-110 object-fit:cover h-[400px] w-[600px] rounded-b-lg"
+        />
           <CardContent className="p-4">
             <h2 className="text-xl font-semibold mb-2">{property.location}</h2>
             <p className="text-gray-600 mb-2">{property.Descriptions[0]?.landType}</p>
