@@ -4,41 +4,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-
-interface Property {
-  propertyId: number
-  userId: number
-  price: number
-  location: string
-  status: string
-  plotNumber: number | null
-  Descriptions: {
-    description1: number
-    propertyId: number
-    landType: string
-    size: string
-    houseType: string | null
-    bedRooms: number | null
-    parking: string
-    bathRooms: number | null
-    YearBuilt: number | null
-    Amentities: string | null
-  }[]
-  PropertyImages: {
-    imageId: number
-    propertyId: number
-    imagePath: string
-  }[]
-}
+import { PropertyFormItem } from '@/types'
 
 interface PropertyFormProps {
-  property?: Property | null
-  onSubmit: (property: Property) => void
+  property?: PropertyFormItem | null
+  onSubmit: (property: PropertyFormItem) => void
   onCancel: () => void
 }
 
 export default function PropertyForm({ property, onSubmit, onCancel }: PropertyFormProps) {
-  const [formData, setFormData] = useState<Property>({
+  const [formData, setFormData] = useState<PropertyFormItem>({
     propertyId: 0,
     userId: 1, // Assuming a default user ID
     price: 0,
@@ -57,11 +32,7 @@ export default function PropertyForm({ property, onSubmit, onCancel }: PropertyF
       YearBuilt: null,
       Amentities: null,
     }],
-    PropertyImages: [{
-      imageId: 0,
-      propertyId: 0,
-      imagePath: '',
-    }],
+    PropertyImages: null,
   })
 
   useEffect(() => {
@@ -200,21 +171,21 @@ export default function PropertyForm({ property, onSubmit, onCancel }: PropertyF
         />
       </div>
       <div>
-  <Label htmlFor="imageFiles">Upload Images</Label>
-  <Input
-    id="imageFiles"
-    name="imageFiles"
-    type="file"
-    multiple
-    onChange={(e) => {
-      const files = Array.from(e.target.files || []);
-      setFormData((prev) => ({
-        ...prev,
-        imageFiles: files,
-      }));
-    }}
-  />
-</div>
+        <Label htmlFor="imageFiles">Upload Images</Label>
+        <Input
+          id="imageFiles"
+          name="imageFiles"
+          multiple
+          type="file"
+          onChange={(e) => {
+            const files = e.target.files;         
+            setFormData((prev) => ({
+              ...prev,
+              PropertyImages: files
+            }));
+          }}
+        />
+      </div>
 
       <div className="flex justify-end space-x-4">
         <Button type="button" variant="outline" onClick={onCancel}>
