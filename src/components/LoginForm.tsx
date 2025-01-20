@@ -1,73 +1,70 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2 } from 'lucide-react'
 
 export default function LoginForm() {
-  const [userName, setUserName] = useState("");
-  const [passWord, setPassWord] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
 
+    // Here you would typically call your authentication API
     try {
-      const response = await fetch("https://localhost:44381/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userName, passWord }),
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        setError(error.message);
-        return;
+      // Simulating an API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // For demo purposes, let's just check if the email and password are not empty
+      if (email && password) {
+        // Redirect to home page on successful login
+        router.push('/')
+      } else {
+        setError('Invalid email or password')
       }
-      localStorage.setItem("user", await response.json());
-      router.push("/");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError('An error occurred. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <Label htmlFor="Username">Username</Label>
+        <Label htmlFor="email">Email address</Label>
         <Input
-          id="userName"
-          name="userName"
-          type="text"
-          autoComplete="userName"
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
           required
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="mt-1"
         />
       </div>
 
       <div>
-        <Label htmlFor="passWord">Password</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
-          id="passWord"
-          name="passWord"
+          id="password"
+          name="password"
           type="password"
           autoComplete="current-password"
           required
-          value={passWord}
-          onChange={(e) => setPassWord(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="mt-1"
         />
       </div>
@@ -86,10 +83,11 @@ export default function LoginForm() {
               Signing in...
             </>
           ) : (
-            "Sign in"
+            'Sign in'
           )}
         </Button>
       </div>
     </form>
-  );
+  )
 }
+
