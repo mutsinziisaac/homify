@@ -2,43 +2,44 @@ import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, DollarSign, Home, Car, Bath } from 'lucide-react'
-import { apiBaseUrl } from '@/lib/api-config.ts'
+import { apiBaseUrl, serverBaseUrl } from '@/lib/api-config.ts'
+import { PropertyListItem } from '@/types'
 
-interface Property {
-  propertyId: number
-  userId: number
-  price: number
-  location: string
-  status: string
-  plotNumber: number | null
-  Descriptions: {
-    description1: number
-    propertyId: number
-    landType: string
-    size: string
-    houseType: string | null
-    bedRooms: number | null
-    parking: string
-    bathRooms: number | null
-    YearBuilt: number | null
-    Amentities: string | null
-  }[]
-  PropertyImages: {
-    imageId: number
-    propertyId: number
-    imagePath: string
-  }[]
-}
+// interface Property {
+//   propertyId: number
+//   userId: number
+//   price: number
+//   location: string
+//   status: string
+//   plotNumber: number | null
+//   Descriptions: {
+//     description1: number
+//     propertyId: number
+//     landType: string
+//     size: string
+//     houseType: string | null
+//     bedRooms: number | null
+//     parking: string
+//     bathRooms: number | null
+//     YearBuilt: number | null
+//     Amentities: string | null
+//   }[]
+//   PropertyImages: {
+//     imageId: number
+//     propertyId: number
+//     imagePath: string
+//   }[]
+// }
 
-export default function PropertyCard({ property }: { property: Property }) {
+export default function PropertyCard({ property }: { property: PropertyListItem }) {
   const description = property.Descriptions[0]
-  const image = property.PropertyImages[0]
+  const image = property.Image
 
   return (
     <Card className="overflow-hidden group cursor-pointer transition-transform duration-300 hover:scale-105">
       <div className="relative h-64">
         <img
-          src={`${apiBaseUrl}/${image?.imagePath}` || "/placeholder.svg"}
+          src={`${serverBaseUrl}/${image}` || "/placeholder.png"}
           alt={property.location}
           className="transition-transform duration-300 group-hover:scale-110 object-fit:cover h-full w-full rounded-b-lg"
         />

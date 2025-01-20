@@ -1,35 +1,35 @@
 'use client'
 import { apiBaseUrl } from '@/lib/api-config'
 import PropertyCard from './PropertyCard'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
+import { PropertyListItem } from '@/types'
+import { readAllProperties } from '@/lib/api'
 
-interface Property {
-  propertyId: number
-  userId: number
-  price: number
-  location: string
-  status: string
-  plotNumber: number | null
-  Descriptions: {
-    description1: number
-    propertyId: number
-    landType: string
-    size: string
-    houseType: string | null
-    bedRooms: number | null
-    parking: string
-    bathRooms: number | null
-    YearBuilt: number | null
-    Amentities: string | null
-  }[]
-  PropertyImages: {
-    imageId: number
-    propertyId: number
-    imagePath: string
-  }[]
-}
-
-
+// interface Property {
+//   propertyId: number
+//   userId: number
+//   price: number
+//   location: string
+//   status: string
+//   plotNumber: number | null
+//   Descriptions: {
+//     description1: number
+//     propertyId: number
+//     landType: string
+//     size: string
+//     houseType: string | null
+//     bedRooms: number | null
+//     parking: string
+//     bathRooms: number | null
+//     YearBuilt: number | null
+//     Amentities: string | null
+//   }[]
+//   PropertyImages: {
+//     imageId: number
+//     propertyId: number
+//     imagePath: string
+//   }[]
+// }
 
 // const properties: Property[] = [
 //   {
@@ -122,15 +122,14 @@ interface Property {
 // ]
 
 export default function PropertyGrid() {
-  const [properties,setProperties] = useState([])
+  const [properties, setProperties] = useState<PropertyListItem[]>([])
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${apiBaseUrl}/api/properties`);
-        const data = await res.json();
+        // const res = await fetch(`${apiBaseUrl}/properties`);
+        // const data = await res.json();
+        const data = await readAllProperties();
         setProperties(data)
-        console.log(data);
-        
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -141,9 +140,10 @@ export default function PropertyGrid() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {properties.map((property) => (
-        <PropertyCard key={property.propertyId}  property={property} />
-      ))}
+      {properties?.length > 0 ?
+        properties && properties.map((property) => (
+          <PropertyCard key={property.propertyId} property={property} />
+        )) : <p>No properties found</p>}
     </div>
   )
 }

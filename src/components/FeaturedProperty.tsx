@@ -5,7 +5,7 @@ export default function FeaturedProperty() {
   return (
     <section className="relative h-[70vh] bg-gray-900 text-white overflow-hidden">
       <Image
-        src="/placeholder.svg?height=1080&width=1920"
+        src="/placeholder.png?height=1080&width=1920"
         alt="Luxury Villa"
         fill
         style={{ objectFit: 'cover' }}
