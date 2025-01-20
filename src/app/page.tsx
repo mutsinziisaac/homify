@@ -1,11 +1,9 @@
-import Header from "@/components/Header";
 import PropertyGrid from "@/components/PropertyGrid";
 import FeaturedProperty from "@/components/FeaturedProperty";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main>
         <FeaturedProperty />
         <section className="container mx-auto px-4 py-16">
