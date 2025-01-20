@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState, useEffect } from 'react'
 import PropertyForm from './PropertyForm'
@@ -19,7 +19,7 @@ export default function PropertyManagement() {
       const data = await readAllProperties();
       setProperties(data)
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -75,9 +75,9 @@ export default function PropertyManagement() {
       console.log(data);
       fetchData()
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
-  }
+  };
 
   return (
     <div>
@@ -114,4 +114,3 @@ export default function PropertyManagement() {
 
   )
 }
-
